@@ -1,0 +1,15 @@
+{
+  "name": "DicomWebPacs",
+  "description": "Dicom Web Pacs",
+  "author": "Thibaut CONSTANT",
+  "version": "0.0.1",
+  "license":"GPL-3.0",
+  "dependencies": {
+    "express": "4.x.x",
+    "mongoose":"4.x.x"
+},
+"engines": {
+    "node": "0.x.x",
+    "npm": "1.x.x"
+  }
+}
