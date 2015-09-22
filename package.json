@@ -6,7 +6,12 @@
   "license":"GPL-3.0",
   "dependencies": {
     "express": "4.x.x",
-    "mongoose":"4.x.x"
+    "mongoose":"4.x.x",
+    "body-parser": "1.X.X",
+    "gcloud":"0.x.x",
+    "mozjpeg":"4.x.x",
+    "sharp":"0.x.x",
+    "duplex-child-process":"0.x.x"
 },
 "engines": {
     "node": "0.x.x",
