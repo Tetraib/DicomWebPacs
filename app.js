@@ -70,7 +70,7 @@ app.post('/v1/images/', function(req, res) {
 
 app.put('/v1/images/:Uid/', function(req, res) {
     var gcsbucket = gcs.bucket('dicom'),
-        remoteWriteStream = gcsbucket.file('test4.jpg').createWriteStream();
+        remoteWriteStream = gcsbucket.file( req.params.Uid+'.jpg').createWriteStream();
 
     remoteWriteStream.on('finish', function() {
         res.status('200').end();
@@ -79,4 +79,14 @@ app.put('/v1/images/:Uid/', function(req, res) {
 
     req.pipe(remoteWriteStream);
 });
+
+app.get('/v1/images/:Uid/', function(req, res) {
+    var gcsbucket = gcs.bucket('dicom'),
+        remoteReadStream = gcsbucket.file(req.params.Uid+'.jpg').createReadStream();
+
+
+
+    remoteReadStream.pipe(res);
+});
+
 app.listen(process.env.PORT, process.env.IP);
