@@ -3,65 +3,16 @@ var express = require('express'),
     gcloud = require('gcloud'),
     bodyParser = require('body-parser'),
     mozjpeg = require('mozjpeg'),
+    fs = require("fs"),
     sharp = require('sharp'),
     Child_Process = require('duplex-child-process'),
     gcs = gcloud.storage({
-        keyFilename: './CloudDicom-1f0d0f461c12.json',
+        keyFilename: './CloudDicom-ef7981bcbc52.json',
         projectId: 'axiomatic-math-616'
     });
 app.use(bodyParser.json());
 
 
-// Function to make standard image from google cloud storage
-var makestdimage = function(fileIn, fileOut, bucket, quality, sharpen, callback) {
-    // Define the bucket to use
-    var gcsbucket = gcs.bucket(bucket),
-        // Resize image
-        resizeStandard = sharp()
-        .withoutEnlargement()
-        .resize(null, 1080)
-        .on('error', function(err) {
-            callback(err);
-        }),
-        cjpeg = Child_Process.spawn(mozjpeg, ['-progressive', '-optimize', '-quality', quality]),
-        // Read from gcs file
-        remoteReadStream = gcsbucket.file(fileIn).createReadStream(),
-        // Write to gcs file
-        remoteWriteStream = gcsbucket.file(fileOut).createWriteStream();
-    // Apply sharpen if asked
-    if (sharpen) {
-        resizeStandard.sharpen();
-    }
-    // Pipe image
-    remoteReadStream.pipe(resizeStandard).pipe(cjpeg).pipe(remoteWriteStream);
-
-    // Error management
-    remoteWriteStream.on('finish', function() {
-        callback(null);
-    });
-    cjpeg.on('error', function(err) {
-        callback(err);
-    });
-    remoteReadStream.on('error', function(err) {
-        callback(err);
-    });
-    remoteWriteStream.on('error', function(err) {
-        callback(err);
-    });
-};
-
-// makestdimage('1.2.392.200036.9107.500.305.0.20150811.102846.281.100_90.jpg', 'test.jpg', 'dicom', '80', false, function(err) {
-//     if (err) {
-//         console.log(err);
-//     }
-//     else {
-//         console.log("ok");
-//     }
-// });
-
-
-
-// 
 app.post('/v1/images/', function(req, res) {
     console.log('New body : ', req.body);
     res.status('201').end();
@@ -70,23 +21,48 @@ app.post('/v1/images/', function(req, res) {
 
 app.put('/v1/images/:Uid/', function(req, res) {
     var gcsbucket = gcs.bucket('dicom'),
-        remoteWriteStream = gcsbucket.file( req.params.Uid+'.jpg').createWriteStream();
-
+        remoteWriteStream = gcsbucket.file(req.params.Uid +'.jpg').createWriteStream(),
+        remoteWriteStream2 = gcsbucket.file(req.params.Uid +'_low.jpg').createWriteStream(),
+        resizeStandard = sharp()
+        .sharpen()
+        .withoutEnlargement()
+        .resize(null, 1080)
+        .on('error', function(err) {
+            console.log('sharp',err);
+        }),
+        cjpeg = Child_Process.spawn(mozjpeg, ['-progressive', '-optimize', '-quality', '80']);
+    cjpeg.on('error', function(err) {
+        console.log('cjpeg',err);
+    });
     remoteWriteStream.on('finish', function() {
         res.status('200').end();
         console.log('file uploaded');
     });
+    remoteWriteStream2.on('finish', function() {
+        console.log('file low uploaded');
+    });
+    remoteWriteStream.on('error', function(err) {
+        console.log('remoteWriteStream',err);
+    });
+    remoteWriteStream2.on('error', function(err) {
+        console.log('remoteWriteStream2',err);
+    });
 
+    req.pipe(resizeStandard).pipe(cjpeg).pipe(remoteWriteStream2);
     req.pipe(remoteWriteStream);
 });
 
 app.get('/v1/images/:Uid/', function(req, res) {
     var gcsbucket = gcs.bucket('dicom'),
-        remoteReadStream = gcsbucket.file(req.params.Uid+'.jpg').createReadStream();
+        remoteReadStream = gcsbucket.file(req.params.Uid + '.jpg').createReadStream();
 
-
+    remoteReadStream.on('error', function(err) {
+        console.log('remoteReadStream',err);
+    });
 
     remoteReadStream.pipe(res);
+    // /!\ need a way for brownser to cache image
+
 });
 
 app.listen(process.env.PORT, process.env.IP);
