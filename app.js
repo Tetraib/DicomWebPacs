@@ -3,7 +3,6 @@ var express = require('express'),
     gcloud = require('gcloud'),
     bodyParser = require('body-parser'),
     mozjpeg = require('mozjpeg'),
-    fs = require("fs"),
     sharp = require('sharp'),
     Child_Process = require('duplex-child-process'),
     gcs = gcloud.storage({
@@ -22,7 +21,8 @@ app.post('/v1/images/', function(req, res) {
 app.put('/v1/images/:Uid/', function(req, res) {
     var gcsbucket = gcs.bucket('dicom'),
         remoteWriteStream = gcsbucket.file(req.params.Uid +'.jpg').createWriteStream(),
-        remoteWriteStream2 = gcsbucket.file(req.params.Uid +'_low.jpg').createWriteStream(),
+        // Make a standard image
+        remoteWriteStream2 = gcsbucket.file(req.params.Uid +'.std.jpg').createWriteStream(),
         resizeStandard = sharp()
         .sharpen()
         .withoutEnlargement()
@@ -59,9 +59,22 @@ app.get('/v1/images/:Uid/', function(req, res) {
     remoteReadStream.on('error', function(err) {
         console.log('remoteReadStream',err);
     });
-
+    // Activate browser cache
+    res.set({'Content-Type': 'image/jpeg','Cache-Control': 'public, max-age=31557600'});
     remoteReadStream.pipe(res);
-    // /!\ need a way for brownser to cache image
+
+});
+
+app.get('/v1/images/:Uid/std', function(req, res) {
+       var gcsbucket = gcs.bucket('dicom'),
+        remoteReadStream = gcsbucket.file(req.params.Uid + '.std.jpg').createReadStream();
+
+    remoteReadStream.on('error', function(err) {
+        console.log('remoteReadStream',err);
+    });
+    // Activate browser cache
+    res.set({'Content-Type': 'image/jpeg','Cache-Control': 'public, max-age=31557600'});
+    remoteReadStream.pipe(res);
 
 });
 
