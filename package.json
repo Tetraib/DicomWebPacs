@@ -3,18 +3,30 @@
   "description": "Dicom Web Pacs",
   "author": "Thibaut CONSTANT",
   "version": "0.0.1",
-  "license":"GPL-3.0",
+  "license": "GPL-3.0",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jasmine-node spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tetraib/DicomWebPacs"
+  },
   "dependencies": {
     "express": "4.x.x",
-    "mongoose":"4.x.x",
+    "mongoose": "4.x.x",
     "body-parser": "1.X.X",
-    "gcloud":"0.x.x",
-    "mozjpeg":"4.x.x",
-    "sharp":"0.x.x",
-    "duplex-child-process":"0.x.x"
-},
-"engines": {
-    "node": "0.x.x",
-    "npm": "1.x.x"
+    "gcloud": "0.x.x",
+    "mozjpeg": "4.x.x",
+    "sharp": "0.x.x",
+    "duplex-child-process": "0.x.x"
+  },
+  "engines": {
+    "node": "0.x.x"
+  },
+  "devDependencies": {
+    "jasmine-node": "1.x.x",
+    "nodemon": "1.x.x",
+    "request": "2.x.x"
   }
 }

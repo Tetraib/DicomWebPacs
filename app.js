@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express'),
     app = express(),
     gcloud = require('gcloud'),
@@ -6,15 +7,19 @@ var express = require('express'),
     sharp = require('sharp'),
     Child_Process = require('duplex-child-process'),
     gcs = gcloud.storage({
-        keyFilename: './CloudDicom-ef7981bcbc52.json',
+        keyFilename: './CloudDicom-2467d1aee1c2.json',
         projectId: 'axiomatic-math-616'
-    });
+    }),
+    serverAddr='https://dicomwebpacs-tetraib-1.c9.io';
 app.use(bodyParser.json());
 
+app.get('/', function(req, res) {
+    res.status('200').send('Running smoothly...');
+});
 
 app.post('/v1/images/', function(req, res) {
     console.log('New body : ', req.body);
-    res.status('201').end();
+    res.status('201').json({ 'Location': serverAddr+'/v1/images/'+req.body.SOPInstanceUID+'/'});
 
 });
 
@@ -47,7 +52,6 @@ app.put('/v1/images/:Uid/', function(req, res) {
     remoteWriteStream2.on('error', function(err) {
         console.log('remoteWriteStream2',err);
     });
-
     req.pipe(resizeStandard).pipe(cjpeg).pipe(remoteWriteStream2);
     req.pipe(remoteWriteStream);
 });
