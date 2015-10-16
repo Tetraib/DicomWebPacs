@@ -22,7 +22,7 @@
     "duplex-child-process": "0.x.x"
   },
   "engines": {
-    "node": "0.x.x"
+    "node": "0.12.x"
   },
   "devDependencies": {
     "jasmine-node": "1.x.x",
