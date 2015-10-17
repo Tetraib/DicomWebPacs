@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "node app.js",
-    "preinstall":"curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | bash -",
+    "preinstall":"curl -s https://raw.githubusercontent.com/lovell/sharp/master/preinstall.sh | sudo bash -",
     "test": "jasmine-node spec"
   },
   "repository": {
