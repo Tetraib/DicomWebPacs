@@ -5,11 +5,11 @@ var options = {
     url: 'http://localhost:8080',
     method: 'GET'
 };
-describe('WebPacs-API', function() {
+describe('WebPacs API', function() {
     describe('GET /', function() {
         it('should respond with : 200', function(done) {
             request(options, function(error, response, body) {
-                expect(response.statusCode).toBe(200);
+                expect(response.statusCode).toBe(2002);
                 done();
             });
         });
@@ -21,3 +21,5 @@ describe('WebPacs-API', function() {
         });
     });
 });
+
+
