@@ -82,5 +82,8 @@ app.get('/v1/images/:Uid/std', function(req, res) {
 
 });
 
-app.listen(process.env.PORT, process.env.IP);
-console.log(process.env.PORT);
+if(process.env.CI==true){
+  app.listen(8080);
+}else{
+  app.listen(process.env.PORT, process.env.IP);
+}
