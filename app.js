@@ -81,10 +81,11 @@ app.get('/v1/images/:Uid/std', function(req, res) {
     remoteReadStream.pipe(res);
 
 });
-
+console.log("SERVER STARTED...");
 if(process.env.CI==true){
     console.log("IN CI...");
   app.listen(8080);
 }else{
+    console.log("NOT IN CI...");
   app.listen(process.env.PORT, process.env.IP);
 }
