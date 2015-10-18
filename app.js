@@ -94,7 +94,7 @@ console.log('CI', process.env.CI);
 console.log('TRAVIS', process.env.TRAVIS);
 var test = process.env.CI;
 
-if (process.env.CI === test) {
+if (process.env.CI == "true") {
     console.log("IN CI...");
     app.listen(8080);
 }
