@@ -92,8 +92,9 @@ app.get('/v1/images/:Uid/std', function(req, res) {
 console.log("SERVER STARTED...");
 console.log('CI', process.env.CI);
 console.log('TRAVIS', process.env.TRAVIS);
+var test = process.env.CI;
 
-if (process.env.CI === true) {
+if (process.env.CI === test) {
     console.log("IN CI...");
     app.listen(8080);
 }
