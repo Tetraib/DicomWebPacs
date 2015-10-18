@@ -1,5 +1,4 @@
 'use strict';
-console.log("Start");
 var express = require('express'),
     app = express(),
     gcloud = require('gcloud'),
