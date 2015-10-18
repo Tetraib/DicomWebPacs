@@ -81,7 +81,10 @@ app.get('/v1/images/:Uid/std', function(req, res) {
     remoteReadStream.pipe(res);
 
 });
-// console.log("SERVER STARTED...");
+console.log("SERVER STARTED...");
+console.log('CI',process.env.CI);
+console.log('TRAVIS',process.env.TRAVIS);
+
 // if(process.env.CI==true){
 //     console.log("IN CI...");
   app.listen(8080);
