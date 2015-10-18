@@ -90,10 +90,4 @@ app.get('/v1/images/:Uid/std', function(req, res) {
 
 });
 
-if (process.env.CI == "true") {
-    app.listen(8080);
-}
-else {
-    app.listen(process.env.PORT, process.env.IP);
-}
-console.log("Running...");
+app.listen(process.env.PORT, process.env.IP);
